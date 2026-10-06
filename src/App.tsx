@@ -4,6 +4,7 @@ import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
 import { PageContainer } from './components/layout/PageContainer'
 import { Button } from './components/common/Button'
+import { EmptyState } from './components/common/EmptyState'
 import { ActivityChart } from './components/dashboard/ActivityChart'
 import { AIInsights } from './components/dashboard/AIInsights'
 import { KnowledgeGraphPreview } from './components/dashboard/KnowledgeGraphPreview'
@@ -115,7 +116,11 @@ function DocumentsPage() {
       }
     >
       <DocumentFilters search={search} onSearch={setSearch} />
-      <DocumentTable rows={filteredDocuments.map((doc) => ({ ...doc, createdAt: doc.createdAt, updatedAt: doc.updatedAt, status: doc.status }))} />
+      {filteredDocuments.length > 0 ? (
+        <DocumentTable rows={filteredDocuments.map((doc) => ({ ...doc, createdAt: doc.createdAt, updatedAt: doc.updatedAt, status: doc.status }))} />
+      ) : (
+        <EmptyState title="No documents found" description="Try a different search term or upload a new research document." />
+      )}
       <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-600 shadow-soft">
         <span>
           Showing {filteredDocuments.length === 0 ? 0 : 1}-{filteredDocuments.length} of {documents.length} documents
@@ -157,17 +162,21 @@ function ExperimentsPage() {
     >
       <ExperimentFilters search={search} onSearch={setSearch} />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {filteredExperiments.map((experiment) => (
-          <ExperimentCard
-            key={experiment.id}
-            name={experiment.name}
-            area={experiment.researchArea}
-            owner={experiment.owner}
-            status={experiment.status}
-            startedAt={experiment.startedAt}
-            lastActivity={experiment.lastActivity}
-          />
-        ))}
+        {filteredExperiments.length > 0 ? (
+          filteredExperiments.map((experiment) => (
+            <ExperimentCard
+              key={experiment.id}
+              name={experiment.name}
+              area={experiment.researchArea}
+              owner={experiment.owner}
+              status={experiment.status}
+              startedAt={experiment.startedAt}
+              lastActivity={experiment.lastActivity}
+            />
+          ))
+        ) : (
+          <EmptyState title="No experiments found" description="Try a different search term to find an experiment." />
+        )}
       </div>
       <ExperimentTable rows={filteredExperiments.map((experiment) => ({ ...experiment }))} />
     </PageContainer>
@@ -197,17 +206,21 @@ function LiteraturePage() {
     <PageContainer title="Literature Intelligence">
       <LiteratureFilters search={search} onSearch={setSearch} />
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {filteredPapers.map((paper) => (
-          <LiteratureCard
-            key={paper.id}
-            title={paper.title}
-            authors={paper.authors}
-            journal={paper.journal}
-            year={paper.year}
-            keyFindings={paper.keyFindings}
-            relatedExperiments={paper.relatedExperiments}
-          />
-        ))}
+        {filteredPapers.length > 0 ? (
+          filteredPapers.map((paper) => (
+            <LiteratureCard
+              key={paper.id}
+              title={paper.title}
+              authors={paper.authors}
+              journal={paper.journal}
+              year={paper.year}
+              keyFindings={paper.keyFindings}
+              relatedExperiments={paper.relatedExperiments}
+            />
+          ))
+        ) : (
+          <EmptyState title="No literature found" description="Try a different search term to find related research." />
+        )}
       </div>
     </PageContainer>
   )
