@@ -6,6 +6,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from src.batch_embedding import run_batch_embedding
+from src.batch_embedding import OfflineEmbeddingClient
+from src.embedding_demo import OFFLINE_VECTORS
 
 
 class FakeEmbeddingClient:
@@ -143,6 +145,23 @@ class BatchEmbeddingTests(unittest.TestCase):
         self.assertEqual(second_summary.batches_submitted, 0)
         self.assertEqual(len(client.calls), 2)
         self.assertEqual(len(results), 3)
+
+    def test_offline_fixture_vectors_follow_text_not_batch_position(self) -> None:
+        client = OfflineEmbeddingClient()
+
+        response = client.embeddings.create(
+            input=[
+                "Use the account email during onboarding.",
+                "Customers can ask for a refund.",
+                "Annual plan refunds are available within 30 days.",
+            ],
+            model="offline-fixture-v2",
+        )
+
+        self.assertEqual(
+            [item.embedding for item in response.data],
+            [OFFLINE_VECTORS[2], OFFLINE_VECTORS[1], OFFLINE_VECTORS[0]],
+        )
 
 
 if __name__ == "__main__":

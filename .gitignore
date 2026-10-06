@@ -33,6 +33,7 @@ outputs/*
 !outputs/similarity-sanity-report.md
 !outputs/vector-db-readback.md
 !outputs/corpus-index-summary.md
+!outputs/retrieval-demo.md
 outputs/embedding-cache.json
 
 # Editor and OS files

@@ -273,7 +273,16 @@ class OfflineEmbeddingClient:
             self.owner.calls.append(input)
             vectors = []
             for index, text in enumerate(input):
-                vector = OFFLINE_VECTORS[index % len(OFFLINE_VECTORS)]
+                normalized = text.casefold()
+                if any(term in normalized for term in ("cafeteria", "soup", "account email", "onboarding", "payment dispute")):
+                    vector = OFFLINE_VECTORS[2]
+                elif "customer" in normalized or "faq" in normalized:
+                    vector = OFFLINE_VECTORS[1]
+                elif any(term in normalized for term in ("refund", "annual plan", "30 days")):
+                    vector = OFFLINE_VECTORS[0]
+                else:
+                    digest_index = hashlib.sha256(text.encode("utf-8")).digest()[0] % len(OFFLINE_VECTORS)
+                    vector = OFFLINE_VECTORS[digest_index]
                 vectors.append(type("Embedding", (), {"index": index, "embedding": vector})())
             return type("Response", (), {"data": vectors})()
 
@@ -307,7 +316,7 @@ def main() -> int:
         chunks = load_corpus_chunks()
         if args.offline_fixture:
             client: Any = OfflineEmbeddingClient()
-            model = "offline-fixture-v1"
+            model = "offline-fixture-v2"
         else:
             load_dotenv(PROJECT_ROOT / ".env")
             missing = [key for key in ("API_BASE_URL", "OPENAI_API_KEY", "EMBEDDING_MODEL") if not os.getenv(key)]
