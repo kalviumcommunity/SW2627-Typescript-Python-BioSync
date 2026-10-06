@@ -24,6 +24,9 @@ import { LiteratureCard } from './components/literature/LiteratureCard'
 import { LiteratureFilters } from './components/literature/LiteratureFilters'
 import { ChatInterface } from './components/ai/ChatInterface'
 import { ResearchBriefPage } from './components/research/ResearchBriefPage'
+import { InsightsPage } from './components/pages/InsightsPage'
+import { TeamPage } from './components/pages/TeamPage'
+import { NotFoundPage } from './components/pages/NotFoundPage'
 import { Badge } from './components/common/Badge'
 import { SearchInput } from './components/common/SearchInput'
 import { activityItems } from './data/activity'
@@ -334,6 +337,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/insights" element={<InsightsPage />} />
         <Route path="/documents" element={<DocumentsPage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
         <Route path="/knowledge" element={<KnowledgePage />} />
@@ -342,6 +346,8 @@ export default function App() {
         <Route path="/brief" element={<ResearchBriefPage />} />
         <Route path="/activity" element={<ActivityPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/team" element={<TeamPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AppLayout>
   )

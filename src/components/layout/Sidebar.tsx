@@ -1,4 +1,4 @@
-import { Activity, BookOpen, BrainCircuit, FileText, FlaskConical, HelpCircle, LayoutDashboard, LogOut, Network, Settings, Sparkles, User, NotebookPen } from 'lucide-react'
+import { Activity, BarChart3, BookOpen, BrainCircuit, FileText, FlaskConical, HelpCircle, LayoutDashboard, Network, Settings, Sparkles, Users, NotebookPen } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
 interface SidebarProps {
@@ -9,7 +9,10 @@ interface SidebarProps {
 const navGroups = [
   {
     title: 'OVERVIEW',
-    items: [{ label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard }]
+    items: [
+      { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+      { label: 'Insights', to: '/insights', icon: BarChart3 }
+    ]
   },
   {
     title: 'RESEARCH',
@@ -30,7 +33,10 @@ const navGroups = [
   },
   {
     title: 'SYSTEM',
-    items: [{ label: 'Settings', to: '/settings', icon: Settings }]
+    items: [
+      { label: 'Team', to: '/team', icon: Users },
+      { label: 'Settings', to: '/settings', icon: Settings }
+    ]
   }
 ]
 
