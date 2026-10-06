@@ -48,10 +48,17 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               </div>
             )}
           </div>
-          <button type="button" onClick={onToggle} className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700">{collapsed ? '→' : '←'}</button>
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+          >
+            {collapsed ? '→' : '←'}
+          </button>
         </div>
 
-        <nav className="flex-1 space-y-6 overflow-y-auto p-3">
+        <nav aria-label="Primary navigation" className="flex-1 space-y-6 overflow-y-auto p-3">
           {navGroups.map((group) => (
             <div key={group.title} className="space-y-2">
               {!collapsed && <div className="px-2 text-[10px] font-semibold tracking-[0.18em] text-slate-400">{group.title}</div>}
@@ -77,7 +84,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           <div className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-slate-100">
             <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
               SC
-              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
+              <span role="status" aria-label="Online" className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
@@ -89,7 +96,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           {!collapsed && (
             <div className="mt-3 flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
               <span className="flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-brand-600" /> Workspace synced</span>
-              <button className="text-slate-500 hover:text-slate-700"><HelpCircle className="h-3.5 w-3.5" /></button>
+              <button type="button" aria-label="Workspace sync help" className="text-slate-500 hover:text-slate-700"><HelpCircle className="h-3.5 w-3.5" /></button>
             </div>
           )}
         </div>
