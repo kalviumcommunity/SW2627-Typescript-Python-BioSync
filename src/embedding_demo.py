@@ -18,6 +18,7 @@ SAMPLE_TEXTS = (
     "customers can request a refund for an annual plan within 30 days",
     "the office cafeteria serves soup on Thursdays",
 )
+SAMPLE_QUERY = "Can I get a refund for my annual subscription within 30 days?"
 SAMPLE_CHUNKS = (
     {
         "text": SAMPLE_TEXTS[0],
@@ -39,6 +40,7 @@ OFFLINE_VECTORS = (
     (0.88, 0.16, 0.27, 0.10, 0.04, 0.13, 0.17, 0.09),
     (0.05, 0.82, 0.09, 0.71, 0.18, 0.03, 0.12, 0.66),
 )
+OFFLINE_QUERY_VECTOR = (0.90, 0.14, 0.255, 0.09, 0.035, 0.12, 0.175, 0.08)
 
 
 @dataclass(frozen=True)
@@ -107,6 +109,67 @@ def stored_embeddings_from_vectors(
         StoredEmbedding(text=chunk["text"], metadata=dict(chunk["metadata"]), vector=list(vector))
         for chunk, vector in zip(chunks, vectors)
     ]
+
+
+def rank_chunks(
+    query_vector: Sequence[float], records: Sequence[StoredEmbedding]
+) -> list[tuple[float, StoredEmbedding]]:
+    """Return chunks ordered from highest to lowest cosine similarity to a query."""
+    return sorted(
+        ((cosine_similarity(query_vector, record.vector), record) for record in records),
+        key=lambda result: result[0],
+        reverse=True,
+    )
+
+
+def render_similarity_report(
+    query: str,
+    query_vector: Sequence[float],
+    records: Sequence[StoredEmbedding],
+    source: str,
+) -> str:
+    """Render ranked chunk evidence, including the best and weakest matches."""
+    ranked = rank_chunks(query_vector, records)
+    if not ranked:
+        raise ValueError("at least one stored embedding is required")
+    lines = [
+        "# Similarity Ranking",
+        "",
+        f"Embedding source: {source}",
+        f"Query: {query}",
+        "Metric: cosine similarity (higher scores indicate more aligned vector directions).",
+        "",
+        "Cosine similarity compares vector direction rather than magnitude, making it a useful ranking score for text embeddings. It is a similarity, not a distance: higher is closer in meaning according to the embedding model. A high score is not proof that a chunk is correct or sufficient.",
+        "",
+        "## Ranked chunks",
+        "",
+    ]
+    for rank, (score, record) in enumerate(ranked, start=1):
+        lines.extend(
+            [
+                f"### {rank}. Cosine similarity: {score:.4f}",
+                "",
+                f"Text: {record.text}",
+                f"Metadata: `{record.metadata}`",
+                "",
+            ]
+        )
+    most_score, most_record = ranked[0]
+    least_score, least_record = ranked[-1]
+    lines.extend(
+        [
+            "## Most similar",
+            "",
+            f"{most_record.text} (score: {most_score:.4f}; source: {most_record.metadata['source']})",
+            "",
+            "## Least similar",
+            "",
+            f"{least_record.text} (score: {least_score:.4f}; source: {least_record.metadata['source']})",
+            "",
+            "The highest-ranked chunk is the first retrieval candidate; the score orders candidates but does not independently verify their claims.",
+        ]
+    )
+    return "\n".join(lines) + "\n"
 
 
 def render_report(texts: Sequence[str], vectors: Sequence[Sequence[float]], source: str) -> str:
@@ -198,12 +261,16 @@ def main() -> int:
     try:
         if args.offline_fixture:
             records = stored_embeddings_from_vectors(SAMPLE_CHUNKS, OFFLINE_VECTORS)
+            query_vector = OFFLINE_QUERY_VECTOR
             source = "offline fixture (no API request)"
         else:
             base_url, api_key, model = load_config()
-            records = embed_chunks(SAMPLE_CHUNKS, OpenAI(base_url=base_url, api_key=api_key), model)
+            client = OpenAI(base_url=base_url, api_key=api_key)
+            records = embed_chunks(SAMPLE_CHUNKS, client, model)
+            query_vector = generate_embeddings((SAMPLE_QUERY,), client, model)[0]
             source = f"API model {model}"
         print(render_storage_report(records, source))
+        print(render_similarity_report(SAMPLE_QUERY, query_vector, records, source))
         return 0
     except (AuthenticationError, RateLimitError, APIConnectionError) as error:
         print(f"Embedding request failed: {error}")

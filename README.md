@@ -122,13 +122,13 @@ The client requests JSON mode with `response_format`, parses the response into a
 
 ## Embedding demonstration
 
-Generate embeddings for related and unrelated texts, print their vector dimension, and compare cosine similarity:
+Generate embeddings for three sample chunks and a refund query, then rank the chunks by cosine similarity:
 
 ```powershell
 python -m src.embedding_demo
 ```
 
-The command uses `API_BASE_URL`, `OPENAI_API_KEY`, and `EMBEDDING_MODEL` from `.env` through the configured OpenAI-compatible API. It stores each returned vector with its source text and retrieval metadata. Use `python -m src.embedding_demo --offline-fixture` to reproduce the committed sample corpus output without making an API request. The sample output is in `outputs/embedding-demo.md`.
+The command uses `API_BASE_URL`, `OPENAI_API_KEY`, and `EMBEDDING_MODEL` from `.env` through the configured OpenAI-compatible API. It embeds the chunks and query, ranks chunks from highest to lowest cosine similarity, and prints each score with its source text and metadata. Cosine similarity compares vector direction, so larger values rank as more similar; unlike a distance, a larger similarity score is better. A high score is a retrieval signal, not a guarantee that the chunk is correct or sufficient. Use `python -m src.embedding_demo --offline-fixture` to reproduce the committed sample ranking without an API request. The sample output is in `outputs/embedding-demo.md`.
 
 ## Reproducing the setup
 
