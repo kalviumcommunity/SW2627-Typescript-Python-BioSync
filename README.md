@@ -130,6 +130,16 @@ python -m src.embedding_demo
 
 The command uses `API_BASE_URL`, `OPENAI_API_KEY`, and `EMBEDDING_MODEL` from `.env` through the configured OpenAI-compatible API. It embeds the chunks and query, ranks chunks from highest to lowest cosine similarity, and prints each score with its source text and metadata. Cosine similarity compares vector direction, so larger values rank as more similar; unlike a distance, a larger similarity score is better. A high score is a retrieval signal, not a guarantee that the chunk is correct or sufficient. Use `python -m src.embedding_demo --offline-fixture` to reproduce the committed sample ranking without an API request. The sample output is in `outputs/embedding-demo.md`.
 
+## Batch embedding pipeline
+
+Embed token chunks across the sample corpus in configurable batches, with retries for transient API failures and a local cache to avoid repeat requests:
+
+```powershell
+python -m src.batch_embedding --batch-size 64
+```
+
+The default cache is `outputs/embedding-cache.json`; it is local and ignored by Git. Cache entries are keyed by embedding model and exact chunk text. Successful batches are persisted atomically, while exhausted batches are counted and reported without stopping later batches. Retries use exponential backoff for connection/time-out errors and transient HTTP statuses (including rate limits). The run reports total chunks, generated embeddings, cache skips, failures, retry attempts, estimated tokens, and approximate cost. Cost is controlled by `--cost-per-million-tokens` (default `$0.02`); token counts use a local character-based estimate unless a tokenizer counter is supplied in code. Use `--offline-fixture` to exercise the pipeline without API credentials, and override `--cache`/`--summary` for isolated runs. `outputs/batch-embedding-summary.md` contains two reproducible offline runs, including the rerun that skips previously embedded chunks.
+
 ## Reproducing the setup
 
 Clone the repository, use the Python version above, follow the five setup steps, and keep real credentials only in the local `.env` file.

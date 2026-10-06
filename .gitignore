@@ -23,6 +23,8 @@ outputs/*
 !outputs/structured-output-results.json
 !outputs/structured-output-samples.md
 !outputs/embedding-demo.md
+!outputs/batch-embedding-summary.md
+outputs/embedding-cache.json
 
 # Editor and OS files
 .vscode/
