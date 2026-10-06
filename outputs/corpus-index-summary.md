@@ -1,10 +1,10 @@
 # Corpus Vector Index Summary
 
 Database: ChromaDB PersistentClient
-Reachable: yes (heartbeat: 1791263525182726800)
+Reachable: yes (heartbeat: 1791264110283397500)
 Local path: `outputs/chroma`
-Collection: `sprint_2_corpus_offline_fixture`
-Embedding model: `offline-fixture-v1`
+Collection: `sprint_2_corpus_offline_fixture_v2`
+Embedding model: `offline-fixture-v2`
 Vector dimension: 8
 
 ## Count validation

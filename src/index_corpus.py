@@ -31,7 +31,7 @@ from src.vector_store import (
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_INDEX_REPORT = PROJECT_ROOT / "outputs" / "corpus-index-summary.md"
-DEFAULT_OFFLINE_INDEX_COLLECTION = "sprint_2_corpus_offline_fixture"
+DEFAULT_OFFLINE_INDEX_COLLECTION = "sprint_2_corpus_offline_fixture_v2"
 DEFAULT_INDEX_BATCH_SIZE = 128
 
 
@@ -260,7 +260,7 @@ def main() -> int:
         )
 
     if args.offline_fixture:
-        model = "offline-fixture-v1"
+        model = "offline-fixture-v2"
         embedding_client: Any = OfflineEmbeddingClient()
         collection_name = args.collection or os.getenv(
             "VECTOR_DB_OFFLINE_INDEX_COLLECTION", DEFAULT_OFFLINE_INDEX_COLLECTION

@@ -170,6 +170,16 @@ python -m src.index_corpus --offline-fixture
 
 The script reuses the embedding cache and Chroma configuration, uses stable IDs for repeatable upserts, removes stale corpus-tagged rows after a complete successful refresh, and checks the indexed count against both the current chunk set and `docs/full-ingestion-summary.json`. It reads a stored record back and compares its ID, text, metadata, and vector length to the source chunk. Live indexing uses the configured embedding API and `VECTOR_DB_COLLECTION`; fixture indexing uses a separate `VECTOR_DB_OFFLINE_INDEX_COLLECTION`. The committed run summary is `outputs/corpus-index-summary.md`.
 
+## Top-k retrieval
+
+Search the indexed collection with a query embedding from the same model, and compare different result counts:
+
+```powershell
+python -m src.retrieve_chunks --k 1 3
+```
+
+The live path uses `EMBEDDING_MODEL` to embed the query and rejects collection model or dimension mismatches. Chroma cosine distances are returned as similarity scores (`1 - distance`); each match includes its text, source metadata, chunk index, and stable ID. Search is filtered to `record_type=corpus_chunk` so setup probes do not appear as retrieved documents. Use `--offline-fixture` after running `python -m src.index_corpus --offline-fixture` to reproduce the sample without API credentials. The saved k comparison is in `outputs/retrieval-demo.md`.
+
 ## Reproducing the setup
 
 Clone the repository, use the Python version above, follow the five setup steps, and keep real credentials only in the local `.env` file.
