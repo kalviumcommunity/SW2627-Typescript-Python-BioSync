@@ -25,6 +25,7 @@ outputs/*
 !outputs/embedding-demo.md
 !outputs/batch-embedding-summary.md
 !outputs/similarity-sanity-report.md
+!outputs/vector-db-readback.md
 outputs/embedding-cache.json
 
 # Editor and OS files

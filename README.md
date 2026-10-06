@@ -150,6 +150,16 @@ python -m src.similarity_sanity_check
 
 The evaluator checks whether a labeled relevant source ranks before unrelated sources, reports top sources and scores, and calls out close preferred-source ties without treating two relevant passages as a relevance failure. It uses the offline 8-dimensional fixture and does not validate the quality of a live embedding model. The committed result is `outputs/similarity-sanity-report.md`; tests include both the expected borderline case and a deliberately missing relevant-source label to verify failure reporting. For broader quality measurement, build a representative labeled query set and track Recall@k, MRR, or nDCG.
 
+## Local vector store
+
+Create a persistent local ChromaDB collection, embed a test source chunk, and verify it can be read back:
+
+```powershell
+python -m src.vector_store --offline-fixture
+```
+
+`VECTOR_DB_PATH` and `VECTOR_DB_COLLECTION` in `.env` select the local database directory and live collection; the defaults are `outputs/chroma` and `sprint_2_chunks`. The offline command uses a separate `VECTOR_DB_OFFLINE_COLLECTION` by default so its fixture vectors cannot contaminate a live model collection. The script reports Chroma heartbeat reachability, creates a cosine collection whose dimension is taken from the inserted vector, and checks stored model/dimension metadata on reuse. Records store the vector as the embedding, source text as the document, and source/section/chunk/page fields as scalar metadata. Use the default API path after setting `API_BASE_URL`, `OPENAI_API_KEY`, and `EMBEDDING_MODEL` to create a vector in the configured model's actual dimension. The readback output is committed in `outputs/vector-db-readback.md`; local database files are ignored by Git.
+
 ## Reproducing the setup
 
 Clone the repository, use the Python version above, follow the five setup steps, and keep real credentials only in the local `.env` file.
