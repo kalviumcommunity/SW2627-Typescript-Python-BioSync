@@ -160,6 +160,16 @@ python -m src.vector_store --offline-fixture
 
 `VECTOR_DB_PATH` and `VECTOR_DB_COLLECTION` in `.env` select the local database directory and live collection; the defaults are `outputs/chroma` and `sprint_2_chunks`. The offline command uses a separate `VECTOR_DB_OFFLINE_COLLECTION` by default so its fixture vectors cannot contaminate a live model collection. The script reports Chroma heartbeat reachability, creates a cosine collection whose dimension is taken from the inserted vector, and checks stored model/dimension metadata on reuse. Records store the vector as the embedding, source text as the document, and source/section/chunk/page fields as scalar metadata. Use the default API path after setting `API_BASE_URL`, `OPENAI_API_KEY`, and `EMBEDDING_MODEL` to create a vector in the configured model's actual dimension. The readback output is committed in `outputs/vector-db-readback.md`; local database files are ignored by Git.
 
+## Corpus indexing
+
+Embed, insert, and count-check every sample-corpus token chunk:
+
+```powershell
+python -m src.index_corpus --offline-fixture
+```
+
+The script reuses the embedding cache and Chroma configuration, uses stable IDs for repeatable upserts, removes stale corpus-tagged rows after a complete successful refresh, and checks the indexed count against both the current chunk set and `docs/full-ingestion-summary.json`. It reads a stored record back and compares its ID, text, metadata, and vector length to the source chunk. Live indexing uses the configured embedding API and `VECTOR_DB_COLLECTION`; fixture indexing uses a separate `VECTOR_DB_OFFLINE_INDEX_COLLECTION`. The committed run summary is `outputs/corpus-index-summary.md`.
+
 ## Reproducing the setup
 
 Clone the repository, use the Python version above, follow the five setup steps, and keep real credentials only in the local `.env` file.
