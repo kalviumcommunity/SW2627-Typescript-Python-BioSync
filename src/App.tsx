@@ -120,10 +120,24 @@ function DocumentsPage() {
         <span>
           Showing {filteredDocuments.length === 0 ? 0 : 1}-{filteredDocuments.length} of {documents.length} documents
         </span>
-        <div className="flex items-center gap-2">
-          <button className="rounded-md border border-slate-200 bg-white px-3 py-1.5">Previous</button>
-          <button className="rounded-md bg-brand-600 px-3 py-1.5 text-white">1</button>
-          <button className="rounded-md border border-slate-200 bg-white px-3 py-1.5">Next</button>
+        <div aria-label="Document pagination" className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled
+            aria-label="Previous page"
+            className="rounded-md border border-slate-200 bg-white px-3 py-1.5 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <button type="button" aria-current="page" aria-label="Page 1" className="rounded-md bg-brand-600 px-3 py-1.5 text-white">1</button>
+          <button
+            type="button"
+            disabled
+            aria-label="Next page"
+            className="rounded-md border border-slate-200 bg-white px-3 py-1.5 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       </div>
       <UploadDocumentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
