@@ -26,6 +26,7 @@ import { ChatInterface } from './components/ai/ChatInterface'
 import { ResearchBriefPage } from './components/research/ResearchBriefPage'
 import { InsightsPage } from './components/pages/InsightsPage'
 import { TeamPage } from './components/pages/TeamPage'
+import { KnowledgeHubPage } from './components/pages/KnowledgeHubPage'
 import { NotFoundPage } from './components/pages/NotFoundPage'
 import { Badge } from './components/common/Badge'
 import { SearchInput } from './components/common/SearchInput'
@@ -342,6 +343,7 @@ export default function App() {
         <Route path="/experiments" element={<ExperimentsPage />} />
         <Route path="/knowledge" element={<KnowledgePage />} />
         <Route path="/literature" element={<LiteraturePage />} />
+        <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
         <Route path="/ai-assistant" element={<AiAssistantPage />} />
         <Route path="/brief" element={<ResearchBriefPage />} />
         <Route path="/activity" element={<ActivityPage />} />
