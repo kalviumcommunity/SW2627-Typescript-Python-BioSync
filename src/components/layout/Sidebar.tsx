@@ -20,7 +20,8 @@ const navGroups = [
       { label: 'Documents', to: '/documents', icon: FileText },
       { label: 'Experiments', to: '/experiments', icon: FlaskConical },
       { label: 'Knowledge Graph', to: '/knowledge', icon: Network },
-      { label: 'Literature', to: '/literature', icon: BookOpen }
+      { label: 'Literature', to: '/literature', icon: BookOpen },
+      { label: 'Knowledge Hub', to: '/knowledge-hub', icon: Sparkles }
     ]
   },
   {
